@@ -10,7 +10,7 @@ import shutil
 import math
 import warnings
 from transformers import AutoModelForCausalLM, AutoTokenizer
-from execution import check_correctness
+# from execution import check_correctness
 from collections import defaultdict
 import sys
 
