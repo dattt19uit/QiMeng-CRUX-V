@@ -187,7 +187,9 @@ class VerilogGenBenchmark:
     def __init__(self, model_path, use_template=True):
         self.use_template = use_template
         self.model_path = model_path
-        self.llm = LLM(model=model_path) #, tensor_parallel_size=8)
+        # self.llm = LLM(model=model_path) #, tensor_parallel_size=8)
+        self.llm = LLM(model=model_path, tensor_parallel_size=2)
+
 
     
     def sampling_parameters(self, temperature, top_p=None):
