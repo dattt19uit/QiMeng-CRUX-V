@@ -179,7 +179,9 @@ def parse_out(text, mode="high"):
         pass_at_10 = float(match.group(3))
         return {'pass@1': pass_at_1, 'pass@5': pass_at_5, 'pass@10': pass_at_10}
     else:
-        print("未找到 pass 数据。")
+        print("Pattern = ", pattern)
+        print("Text = ", text)
+        print("Không tìm thấy dữ liệu pass")
         return text
     
 
@@ -190,14 +192,14 @@ class VerilogGenBenchmark:
         # self.llm = LLM(model=model_path) #, tensor_parallel_size=8)
         self.llm = LLM(
             model=model_path,
-            tensor_parallel_size=2,           # ← Giảm xuống 1 GPU trước (rất quan trọng)
-            gpu_memory_utilization=0.65,      # tăng nhẹ nhưng an toàn
-            enforce_eager=True,               # ← BẮT BUỘC
-            attention_backend="TRITON_ATTN",     # ← BẮT BUỘC
-            max_model_len=16384,              # giảm tạm để tiết kiệm memory
+            tensor_parallel_size=2,           
+            gpu_memory_utilization=0.65,      
+            enforce_eager=True,               
+            attention_backend="TRITON_ATTN",     
+            max_model_len=16384,              
             dtype="float16",
             trust_remote_code=True,
-            enable_prefix_caching=False,      # ← Tắt để tiết kiệm thêm
+            enable_prefix_caching=False,
         )
 
 
@@ -314,7 +316,12 @@ class VerilogGenBenchmark:
                         sf.write(json.dumps(All_Data[idx])+'\n')
             
             # evaluate_functional_correctness /workspace/S/huanglei/VerilogGen-Benchmark/VerilogEval-v1/DAPOMerge106-CD-420/VerilogEval_Human_temp0.2.jsonl --problem_file /workspace/S/huanglei/verilog-eval/data/VerilogEval_Human.jsonl
-            command = f"evaluate_functional_correctness {outfile} --problem_file ./verilog-eval-v1/data/VerilogEval_{gtype}.jsonl"
+            # command = f"evaluate_functional_correctness {outfile} --problem_file ./verilog-eval-v1/data/VerilogEval_{gtype}.jsonl"
+            command = (
+                f"python ./verilog-eval-v1/verilog_eval/evaluate_functional_correctness.py "
+                f"{outfile} "
+                f"--problem_file ./verilog-eval-v1/data/VerilogEval_{gtype}.jsonl"
+            )
             result = subprocess.run(command, shell=True, capture_output=True, text=True, check=True)
             pass_rate = parse_out(result)
             pass_rate['model'] = self.model_path
