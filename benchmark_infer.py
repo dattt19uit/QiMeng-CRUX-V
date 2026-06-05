@@ -188,7 +188,11 @@ class VerilogGenBenchmark:
         self.use_template = use_template
         self.model_path = model_path
         # self.llm = LLM(model=model_path) #, tensor_parallel_size=8)
-        self.llm = LLM(model=model_path, tensor_parallel_size=2, gpu_memory_utilization=0.85)
+        self.llm = LLM(model=model_path, 
+                       tensor_parallel_size=2, 
+                       gpu_memory_utilization=0.85,
+                       enforce_eager=True,
+                       attention_backend="xformers")
 
 
     
