@@ -194,7 +194,6 @@ class VerilogGenBenchmark:
             gpu_memory_utilization=0.88,      # tăng nhẹ nhưng an toàn
             enforce_eager=True,               # ← BẮT BUỘC
             attention_backend="xformers",     # ← BẮT BUỘC
-            disable_cuda_graph=True,          # ← BẮT BUỘC
             max_model_len=16384,              # giảm tạm để tiết kiệm memory
             dtype="float16",
             trust_remote_code=True,
