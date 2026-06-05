@@ -194,7 +194,7 @@ class VerilogGenBenchmark:
             gpu_memory_utilization=0.65,      # tăng nhẹ nhưng an toàn
             enforce_eager=True,               # ← BẮT BUỘC
             attention_backend="TRITON_ATTN",     # ← BẮT BUỘC
-            max_model_len=4096,              # giảm tạm để tiết kiệm memory
+            max_model_len=16384,              # giảm tạm để tiết kiệm memory
             dtype="float16",
             trust_remote_code=True,
             enable_prefix_caching=False,      # ← Tắt để tiết kiệm thêm
