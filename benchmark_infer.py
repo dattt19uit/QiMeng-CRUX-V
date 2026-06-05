@@ -188,11 +188,17 @@ class VerilogGenBenchmark:
         self.use_template = use_template
         self.model_path = model_path
         # self.llm = LLM(model=model_path) #, tensor_parallel_size=8)
-        self.llm = LLM(model=model_path, 
-                       tensor_parallel_size=2, 
-                       gpu_memory_utilization=0.85,
-                       enforce_eager=True,
-                       attention_backend="xformers")
+        self.llm = LLM(
+            model="Taskii/QiMeng-CRUX-V",
+            tensor_parallel_size=1,           # ← Giảm xuống 1 GPU trước (rất quan trọng)
+            gpu_memory_utilization=0.88,      # tăng nhẹ nhưng an toàn
+            enforce_eager=True,               # ← BẮT BUỘC
+            attention_backend="xformers",     # ← BẮT BUỘC
+            disable_cuda_graph=True,          # ← BẮT BUỘC
+            max_model_len=16384,              # giảm tạm để tiết kiệm memory
+            dtype="float16",
+            trust_remote_code=True,
+        )
 
 
     
