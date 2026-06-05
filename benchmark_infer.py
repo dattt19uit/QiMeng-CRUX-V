@@ -376,40 +376,20 @@ class VerilogGenBenchmark:
                 # else:
 
         
-        # with open(outfile, "a") as sf:
-        #     Results = self.get_response(Prompts, sampling_params, response_batch)
-        #     for idx in range(len(All_Data)):
-        #         for cid in range(idx * response_batch, (idx+1) * response_batch):
-        #             if task=='spec-to-rtl':
-        #                 All_Data[idx]["interface"] = Results[cid]['code_header']
-        #                 All_Data[idx]["completion"] = Results[cid]['full_code']
-        #             else:
-        #                 All_Data[idx]["completion"] = Results[cid]['code_body']
-        #             All_Data[idx]["full_code"] = Results[cid]['full_code']
-        #             All_Data[idx]["code_header"] = Results[cid]['code_header']
-        #             All_Data[idx]["redes"] = Results[cid]['direct_output']
-        #             All_Data[idx]["maintain"] = All_Data[idx]["description"] in All_Data[idx]["redes"]
-        #             sf.write(json.dumps(All_Data[idx])+'\n')
         with open(outfile, "a") as sf:
             Results = self.get_response(Prompts, sampling_params, response_batch)
-            
             for idx in range(len(All_Data)):
-                for cid in range(idx * response_batch, (idx + 1) * response_batch):
-                    # Tạo bản sao mới để tránh ghi đè
-                    result_item = All_Data[idx].copy()
-                    
-                    if task == 'spec-to-rtl':
-                        result_item["interface"] = Results[cid]['code_header']
-                        result_item["completion"] = Results[cid]['full_code']
+                for cid in range(idx * response_batch, (idx+1) * response_batch):
+                    if task=='spec-to-rtl':
+                        All_Data[idx]["interface"] = Results[cid]['code_header']
+                        All_Data[idx]["completion"] = Results[cid]['full_code']
                     else:
-                        result_item["completion"] = Results[cid]['code_body']
-                    
-                    result_item["full_code"] = Results[cid]['full_code']
-                    result_item["code_header"] = Results[cid]['code_header']
-                    result_item["redes"] = Results[cid]['direct_output']
-                    result_item["maintain"] = All_Data[idx]["description"] in Results[cid]['direct_output']
-                    
-                    sf.write(json.dumps(result_item) + '\n')
+                        All_Data[idx]["completion"] = Results[cid]['code_body']
+                    All_Data[idx]["full_code"] = Results[cid]['full_code']
+                    All_Data[idx]["code_header"] = Results[cid]['code_header']
+                    All_Data[idx]["redes"] = Results[cid]['direct_output']
+                    All_Data[idx]["maintain"] = All_Data[idx]["description"] in All_Data[idx]["redes"]
+                    sf.write(json.dumps(All_Data[idx])+'\n')
         # /workspace/S/huanglei/VerilogGen-Benchmark/VerilogEval-v2/spec-to-rtl/FSM_BlockCoT_SFT-1000-/VerilogEval_low.jsonl
         command = f"python ./verilog-eval-2/evaluation/evaluate_functional_correctness.py {outfile} --problem_file ./verilog-eval-2/Tasks/{task}.jsonl"
         result = subprocess.run(command, shell=True, capture_output=True, text=True, check=True)
