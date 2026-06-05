@@ -205,7 +205,8 @@ class VerilogGenBenchmark:
         return sampling_params
 
     
-    def get_response(self, Prompts, sampling_params, response_batch=20):
+    # def get_response(self, Prompts, sampling_params, response_batch=20):
+    def get_response(self, Prompts, sampling_params, response_batch=4):
         all_conversations = []
         for prompt in Prompts:
             if self.use_template:
