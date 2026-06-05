@@ -13,6 +13,10 @@ from transformers import AutoModelForCausalLM, AutoTokenizer
 # from execution import check_correctness
 from collections import defaultdict
 import sys
+import os
+os.environ["VLLM_USE_FLASHINFER_SAMPLER"] = "0"
+os.environ["VLLM_ATTENTION_BACKEND"] = "XFORMERS"
+os.environ["LD_LIBRARY_PATH"] = "/usr/local/nvidia/lib64:" + os.environ.get("LD_LIBRARY_PATH", "")
 
 def calculate_task_pass_at_k(input_file_path, k=5):
     """
