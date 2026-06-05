@@ -257,7 +257,7 @@ class VerilogGenBenchmark:
     def run_VerilogEval_v1(self, temperature, top_p=None, response_batch=20, GType=None, fold_idx=""):
         save_path = "./VerilogEval-v1"
         os.makedirs(save_path, exist_ok=True)
-        dir_path = f"{save_path}/{self.model_name}-{fold_idx}"
+        dir_path = f"{save_path}/{self.model_path}-{fold_idx}"
         # # 如果目录已存在，则删除
         # if os.path.exists(dir_path):
         #     shutil.rmtree(dir_path)
@@ -270,7 +270,7 @@ class VerilogGenBenchmark:
             GType = ["Machine", "Human"]
         for gtype in GType: 
             infile = f"./verilog-eval-v1/CompleteData/VerilogEval_{gtype}.jsonl"
-            outfile = f"{save_path}/{self.model_name}-{fold_idx}/VerilogEval_{gtype}_temp{temperature}.jsonl"
+            outfile = f"{save_path}/{self.model_path}-{fold_idx}/VerilogEval_{gtype}_temp{temperature}.jsonl"
             if os.path.exists(outfile):
                 os.remove(outfile)
             score_file = f"{save_path}/VerilogEval_{gtype}_temp{temperature}_score.jsonl"
@@ -306,7 +306,7 @@ class VerilogGenBenchmark:
             command = f"evaluate_functional_correctness {outfile} --problem_file ./verilog-eval-v1/data/VerilogEval_{gtype}.jsonl"
             result = subprocess.run(command, shell=True, capture_output=True, text=True, check=True)
             pass_rate = parse_out(result)
-            pass_rate['model'] = self.model_name
+            pass_rate['model'] = self.model_path
             with open(score_file, 'a') as f:
                 json_line = json.dumps(pass_rate) + '\n'
                 f.write(json_line)
@@ -330,7 +330,7 @@ class VerilogGenBenchmark:
         os.makedirs("./VerilogEval-v2", exist_ok=True)
         save_path = f"./VerilogEval-v2/{task}"
         os.makedirs(save_path, exist_ok=True)
-        dir_path = f"{save_path}/{self.model_name}-{fold_idx}"
+        dir_path = f"{save_path}/{self.model_path}-{fold_idx}"
         # # 如果目录已存在，则删除
         # if os.path.exists(dir_path):
         #     shutil.rmtree(dir_path)
@@ -339,7 +339,7 @@ class VerilogGenBenchmark:
 
         infile = f"./verilog-eval-2/Tasks/{task}.jsonl"
 
-        outfile = f"{save_path}/{self.model_name}-{fold_idx}/VerilogEval_{mode}.jsonl"
+        outfile = f"{save_path}/{self.model_path}-{fold_idx}/VerilogEval_{mode}.jsonl"
         if os.path.exists(outfile):
             os.remove(outfile)
 
@@ -384,7 +384,7 @@ class VerilogGenBenchmark:
         result = subprocess.run(command, shell=True, capture_output=True, text=True, check=True)
         pass_rate = parse_out(result, mode)
         if isinstance(pass_rate, dict):
-            pass_rate['model'] = self.model_name
+            pass_rate['model'] = self.model_path
         with open(score_file, 'a') as f:
             json_line = json.dumps(pass_rate) + '\n'
             f.write(json_line)
@@ -396,11 +396,11 @@ class VerilogGenBenchmark:
         os.makedirs("./VerilogEval-v2", exist_ok=True)
         save_path = f"./VerilogEval-v2/{task}"
         os.makedirs(save_path, exist_ok=True)
-        os.makedirs(f"{save_path}/{self.model_name}", exist_ok=True)
+        os.makedirs(f"{save_path}/{self.model_path}", exist_ok=True)
 
         infile = f"./verilog-eval-2/Tasks/{task}.jsonl"
 
-        outfile = f"{save_path}/{self.model_name}/VerilogEval_{temperature}.jsonl"
+        outfile = f"{save_path}/{self.model_path}/VerilogEval_{temperature}.jsonl"
         if os.path.exists(outfile):
                 os.remove(outfile)
         score_file = f"{save_path}/VerilogEval_{temperature}_score.jsonl"
@@ -440,7 +440,7 @@ class VerilogGenBenchmark:
         result = subprocess.run(command, shell=True, capture_output=True, text=True, check=True)
         pass_rate = parse_out(result)
         if isinstance(pass_rate, dict):
-            pass_rate['model'] = self.model_name
+            pass_rate['model'] = self.model_path
         with open(score_file, 'a') as f:
             json_line = json.dumps(pass_rate) + '\n'
             f.write(json_line)
@@ -450,9 +450,9 @@ class VerilogGenBenchmark:
         infile = "./RTLLM/complete_data.jsonl"
         bigsave_path = f"./RTLLM_Benchmark"
         os.makedirs(bigsave_path, exist_ok=True)
-        os.makedirs(f"{bigsave_path}/{self.model_name}{fold_idx}", exist_ok=True)
-        os.makedirs(f"{bigsave_path}/{self.model_name}{fold_idx}/temperature_{temperature}", exist_ok=True)
-        save_path = f"{bigsave_path}/{self.model_name}{fold_idx}/temperature_{temperature}"
+        os.makedirs(f"{bigsave_path}/{self.model_path}{fold_idx}", exist_ok=True)
+        os.makedirs(f"{bigsave_path}/{self.model_path}{fold_idx}/temperature_{temperature}", exist_ok=True)
+        save_path = f"{bigsave_path}/{self.model_path}{fold_idx}/temperature_{temperature}"
         sampling_params = self.sampling_parameters(temperature)
         if temperature == 0.0:
             response_batch = 1
