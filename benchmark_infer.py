@@ -13,6 +13,15 @@ from transformers import AutoModelForCausalLM, AutoTokenizer
 # from execution import check_correctness
 from collections import defaultdict
 import sys
+import os
+
+# Set PYTHONPATH globally cho tất cả subprocess
+_base = os.path.dirname(os.path.abspath(__file__))
+os.environ["PYTHONPATH"] = (
+    f"{_base}/verilog-eval-v1:"
+    f"{_base}/verilog-eval-2:"
+    + os.environ.get("PYTHONPATH", "")
+)
 
 def calculate_task_pass_at_k(input_file_path, k=5):
     """
@@ -163,9 +172,11 @@ def extract_verilog(content):
     return header, remaining
 
 def parse_out(text, mode="high"):
-    pattern = r"\{'pass@1': ([\d.]+), 'pass@5': ([\d.]+), 'pass@10': ([\d.]+)\}"
+    # pattern = r"\{'pass@1': ([\d.]+), 'pass@5': ([\d.]+), 'pass@10': ([\d.]+)\}"
+    pattern = r"\{'pass@1': (?:np\.float64\()?([\d.]+)\)?, 'pass@5': (?:np\.float64\()?([\d.]+)\)?, 'pass@10': (?:np\.float64\()?([\d.]+)\)?\}"
     if mode=='low':
-        pattern = r"\{'pass@1': ([\d.]+)\}"
+        # pattern = r"\{'pass@1': ([\d.]+)\}"
+        pattern = r"\{'pass@1': (?:np\.float64\()?([\d.]+)\)?"
     if not isinstance(text, str):
         text = str(text)
     match = re.search(pattern, text)
@@ -454,7 +465,7 @@ class VerilogGenBenchmark:
                     All_Data[idx]["maintain"] = All_Data[idx]["description"] in All_Data[idx]["redes"]
                     sf.write(json.dumps(All_Data[idx])+'\n')
     
-        command = f"python ./verilog-eval-2/evaluation/evaluate_functional_correctness.py {outfile} --problem_file .i/verilog-eval-2/Tasks/{task}.jsonl"
+        command = f"python ./verilog-eval-2/evaluation/evaluate_functional_correctness.py {outfile} --problem_file ./verilog-eval-2/Tasks/{task}.jsonl"
         result = subprocess.run(command, shell=True, capture_output=True, text=True, check=True)
         pass_rate = parse_out(result)
         if isinstance(pass_rate, dict):
